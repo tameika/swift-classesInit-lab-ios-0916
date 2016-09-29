@@ -16,11 +16,40 @@ import Foundation
  
  Create a new class called `Person`. This class should include properties for a person's first and last name. Name these properties `firstName` and `lastName`. You should also create an initializer that takes a first and last name as parameters and assigns them to the property.
  */
-// write your code here
+
+class Person {
+    
+    var firstName: String
+    var lastName: String
+    
+    
+    var fullName: String {
+        
+        return firstName+" "+lastName
+        
+    }
+    func greet(_ someone:Person) -> String {
+        
+        return "Hello, \(someone.firstName)!"
+    }
+    
+    
+    init(firstName: String, lastName: String) {
+        self.firstName = firstName
+        self.lastName = lastName
+        
+    }
+    
+    
+}
 
 
 
 
+
+
+
+// greet(_:) should take one parameter, another Person object, and return a string that says "Hello, <person's first name>!"
 
 
 
@@ -75,16 +104,48 @@ assert(greeting == "Hello, Alice!", greeting)
  
  (Note that the code below also includes an extension for adding a method to `Double`. You'll learn more about extensions later, so for now, don't worry about it. You'll see how to use it in Question #6 below.)
  */
+
+
+
+class Transaction {
+    
+    var type: String
+    var amount: Double
+    
+    var description: String {
+        
+        switch type {
+            
+            case "in":
+                return "Transaction: credit in the amount of $\(amount.toMoney)"
+            
+            case "out":
+                return "Transaction: debit in the amount of $\(amount.toMoney)"
+            default:
+            return "Transaction: none."
+        }
+    }
+    
+    init(type: String, amount: Double) {
+        
+        self.type = type
+        self.amount = amount
+    }
+    
+    
+}
+
+
+
+
 extension Double {
     var toMoney: String {
         return NSString(format: "%.2f", self) as String
     }
 }
 
-// write your code here
 
-
-
+//This property should return the string "Transaction: <credit or debit> in the amount of $<amount>.
 
 
 
@@ -132,12 +193,52 @@ assert(transaction2.description == "Transaction: debit in the amount of $1.20", 
  
  Create an initializer for this class. It should only take one parameter: the owner of the account. When the class is first created (instantiated), the list of transactions should be empty.
  */
-// write your code here
-
-
-
-
-
+class BankAccount {
+    
+    var owner: Person
+    var transactions = [Transaction]()
+    
+    var balance: Double {
+        get{
+            var total1 = 0.0
+            var total2 = 0.0
+            for item in transactions {
+                
+                if item.type == "in" {
+                    
+                    total1 += item.amount
+                    
+                
+                }else{
+                    total2 += item.amount
+                }
+            }
+            return (total1 - total2)
+            
+                   }
+    }
+    
+    init(owner: Person) {
+        self.owner = owner
+        
+    }
+    
+    func deposit(depositAmount: Double) {
+        
+        let newDeposit = Transaction(type: "in", amount: depositAmount)
+        
+        transactions.append(newDeposit)
+        
+    }
+    
+    func withdraw(withdrawlAmount: Double) {
+        
+        let newWithdrawl = Transaction(type: "out", amount: withdrawlAmount)
+        
+        transactions.append(newWithdrawl)
+    }
+    
+}
 
 
 
@@ -148,13 +249,22 @@ let personBankAccount = BankAccount(owner: person)
 assert(personBankAccount.owner.fullName == "Alice Johnson", personBankAccount.owner.fullName)
 assert(personBankAccount.transactions.isEmpty)
 
+
+
+//9. The owner of an account needs a way to find out how much money they have. Add a computed property to the BankAccount class you created in Question #6 called balance. It should tally up all the transactions and return how much money is in the account. The balance should be returned as a Double.
+
+//Remember that "in" transactions count as money coming in, and "out" transactions count as money going out.
+
+
+
+
 /*: section7
  
  ## Question 7
  
  You need a way to for people to add money to their bank account. In the `BankAccount` class you created in Question #6, add a method called `deposit(_:)`. This method should take a `Double` representing the amount to be deposited into the account as a parameter. It should create a new `Transaction` object representing the deposit and add it to the `BankAccount`'s `transactions` array. This method does not need to return anything.
  */
-
+//8. The owner of the account also needs a way to take money out of their bank account. In the BankAccount class you created in Question #6, add a method called withdraw(_:). This method should take a Double representing the amount to be withdrawn from the account as a parameter. It should create a new Transaction object representing the withdrawal and add it to the BankAccount's transactions array. This method does not need to return anything.
 
 
 
@@ -166,9 +276,9 @@ assert(personBankAccount.transactions.isEmpty)
 
 
 // Test
-personBankAccount.deposit(100.0)
+personBankAccount.deposit(depositAmount: 100.0)
 assert(personBankAccount.transactions.count == 1, "\(personBankAccount.transactions.count)")
-personBankAccount.deposit(10.0)
+personBankAccount.deposit(depositAmount: 10.0)
 assert(personBankAccount.transactions.count == 2, "\(personBankAccount.transactions.count)")
 
 /*: section8
@@ -188,9 +298,9 @@ assert(personBankAccount.transactions.count == 2, "\(personBankAccount.transacti
 
 
 // Test
-personBankAccount.withdraw(25.0)
+personBankAccount.withdraw(withdrawlAmount: 25.0)
 assert(personBankAccount.transactions.count == 3, "\(personBankAccount.transactions.count)")
-personBankAccount.withdraw(10.5)
+personBankAccount.withdraw(withdrawlAmount: 10.5)
 assert(personBankAccount.transactions.count == 4, "\(personBankAccount.transactions.count)")
 
 /*: section9
